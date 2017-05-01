@@ -2,6 +2,9 @@ import numpy as np
 import pickle
 import gzip
 
+import os
+
+
 
 path = "../inputs/project_instances/"
 
@@ -24,25 +27,91 @@ def load_inputs(start_num, end_num):
 def parse_input(path):
     # Load the data
     with open(path) as f:
-        data = f.readlines()
+        #data = f.readlines()
 
-    # Clean white space
-    data = [x.strip() for x in data]
-    P = float(data[0])
-    M = float(data[1])
-    N = int(data[2])
-    C = int(data[3])
+        P = float(f.readline())
+        M = float(f.readline())
+        N = int(f.readline())
+        C = int(f.readline())
 
-    print("P: " + str(P) +  " M: " + str(M) + " N: " + str(N) + " C: " + str(C) + "\n")
+        items = []
+        constraints = []
+        for i in range(N):
+          name, cls, weight, cost, val = f.readline().split(";")
+          items.append([name, int(cls), float(weight), float(cost), float(val)])
+        for i in range(C):
+          constraint = set(eval(f.readline()))
+          constraints.append(constraint)
 
-    items = data[4:4+N]
-    constraints = data[4+N:5+N+C]
+    # # Clean white space
+    # data = [x.strip() for x in data]
+    # P = float(data[0])
+    # M = float(data[1])
+    # N = int(data[2])
+    # C = int(data[3])
+
+    # print("P: " + str(P) +  " M: " + str(M) + " N: " + str(N) + " C: " + str(C) + "\n")
+
+    # items = data[4:4+N]
+    # constraints = data[4+N:5+N+C]
 
     return [P, M, items, constraints]
+
+def read_input(filename):
+  """
+  P: float
+  M: float
+  N: integer
+  C: integer
+  items: list of tuples
+  constraints: list of sets
+  """
+  with open(filename) as f:
+    P = float(f.readline())
+    M = float(f.readline())
+    N = int(f.readline())
+    C = int(f.readline())
+    items = []
+    constraints = []
+    for i in range(N):
+      name, cls, weight, cost, val = f.readline().split(";")
+      items.append((name, int(cls), float(weight), float(cost), float(val)))
+    for i in range(C):
+      constraint = set(eval(f.readline()))
+      constraints.append(constraint)
+  
+  return P, M, N, C, items, constraints
+
 
 def parse_item(item):
     return item.split(";")
 
 def parse_constraint(constraint):
-    return item.split(",")
+    assert(constraint != "")
+
+    constraints = constraint.split(",")
+    for i in range(len(constraints)):
+        constraints[i] = int(constraints[i])
+
+    return constraints
+
+def write_output(filename, items_chosen, new_best, p_num):
+
+    best_path = "../best/output_" + p_num + "_best.out"
+    if (os.path.isfile(best_path)):
+        os.remove(best_path)
+    
+    if (os.path.isfile(filename)):
+        os.remove(filename)
+
+    b = open(best_path, "w+")
+    old_best = b.readline()
+
+    if (old_best == "" or (new_best > float(old_best))):
+        b.write(str(new_best))
+
+        f = open(filename, "w+")
+
+        for i in items_chosen:
+            f.write("{0}\n".format(i))
 
