@@ -98,18 +98,26 @@ def parse_constraint(constraint):
 def write_output(filename, items_chosen, new_best, p_num):
 
     best_path = "../best/output_" + p_num + "_best.out"
-    if (os.path.isfile(best_path)):
-        os.remove(best_path)
+    # if (os.path.isfile(best_path)):
+    #     os.remove(best_path)
     
-    if (os.path.isfile(filename)):
-        os.remove(filename)
+    # if (os.path.isfile(filename)):
+    #     os.remove(filename)
 
-    b = open(best_path, "w+")
+    b = open(best_path, "r")
     old_best = b.readline()
 
     if (old_best == "" or (new_best > float(old_best))):
-        b.write(str(new_best))
+        print("NEW BEST FOR " + filename)
 
+        b.close()
+        os.remove(best_path)
+        b = open(best_path, "w+")
+        b.write(str(new_best))
+        
+        if (os.path.isfile(filename)):
+          os.remove(filename)
+        
         f = open(filename, "w+")
 
         for i in items_chosen:
