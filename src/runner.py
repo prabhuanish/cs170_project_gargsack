@@ -11,7 +11,6 @@ MAX_LIST_LEN = 200001
 def runner(start_in = 1, end_in = 21, num_iter = 1):
     data = load_inputs(start_in, end_in)
     prob_num = start_in
-    prob_num = 1
     for input_data in data:
         print("PROBLEM NUMBER: " + str(prob_num))
         res = solver(input_data, prob_num, num_iter)
@@ -29,7 +28,7 @@ def solver(data, problem_num, num_iter):
     C = len(constraints)
     N = len(items)
 
-    y = random.randint(1, 200)
+    y = random.randint(1, 50)
     batch_size = N // y
 
     incompat_list = createIncompatList(constraints)
@@ -91,7 +90,7 @@ def calc_priority(P, M, item, x):
         return 10 * resale
 
     if (x == 0):
-        return (resale / (cost))
+        return (resale / cost)
     elif (x == 1):
         return (resale / (cost + weight))
     elif (x == 2):
